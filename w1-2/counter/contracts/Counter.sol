@@ -5,15 +5,15 @@ pragma solidity ^0.8.9;
 // import "hardhat/console.sol";
 
 contract Counter {
-    uint public counter;
+    uint public total;
 
     function add1() public returns(uint){
-        counter += 1;
-        return counter;
+        total += 1;
+        return total;
     }
 
     function addx(uint x) public returns(uint){
-        counter = counter + x;
-        return counter;
+        total = total + x;
+        return total;
     }
 }
