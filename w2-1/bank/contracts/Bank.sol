@@ -3,7 +3,6 @@ pragma solidity ^0.8.10;
 
 contract Bank {
     mapping(address => uint256) private balances;
-    uint256 private maxWithdrawalAmount = 10 ether;
 
     event Deposit(address indexed account, uint256 amount);
     event Withdrawal(address indexed account, uint256 amount);
@@ -14,14 +13,13 @@ contract Bank {
         emit Deposit(msg.sender, msg.value);
     }
 
-    function withdraw(uint256 amount) public {
-        require(amount > 0, "Amount must be greater than zero");
-        require(amount <= balances[msg.sender], "Insufficient balance");
-        require(amount <= maxWithdrawalAmount, "Withdrawal amount exceeds maximum");
-        balances[msg.sender] -= amount;
-        bool success = payable(msg.sender).send(amount);
+    function withdraw() public {
+        uint256 balance = balances[msg.sender];
+        require(balance > 0 , "Insufficient balance");
+        balances[msg.sender] = 0;
+        (bool success,) = payable(msg.sender).call{value:balance}("");
         require(success, "Withdrawal failed");
-        emit Withdrawal(msg.sender, amount);
+        emit Withdrawal(msg.sender, balance);
     }
 
     function getBalance(address account) public view returns (uint256) {
